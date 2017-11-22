@@ -1,6 +1,7 @@
 package be.braek.gpio;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonSyntaxException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -26,7 +27,7 @@ public class PinController {
         produces = PinController.CONTENT_TYPE
     )
     public ResponseEntity list() {
-        return ResponseEntity.ok(gson.toJson(pins));
+        return ResponseEntity.ok(gson.toJson(new Envelope(pins)));
     }
 
     private Pin getPinById(int id) {
@@ -48,7 +49,7 @@ public class PinController {
         if(pin == null) {
             return ResponseEntity.notFound().build();
         }
-        return ResponseEntity.ok(gson.toJson(pin));
+        return ResponseEntity.ok(gson.toJson(new Envelope(pin)));
     }
 
     @ResponseBody
@@ -66,6 +67,11 @@ public class PinController {
         if(pin == null) {
             return ResponseEntity.noContent().build();
         }
-        return ResponseEntity.ok(gson.toJson(pin));
+        try {
+            Envelope envelope = gson.fromJson(body, Envelope.class);
+            return ResponseEntity.ok(gson.toJson(new Envelope(pin)));
+        } catch(JsonSyntaxException jse) {
+            return ResponseEntity.badRequest().build();
+        }
     }
 }
