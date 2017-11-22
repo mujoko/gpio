@@ -1,7 +1,11 @@
 package be.braek.gpio;
 
+import com.google.gson.Gson;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 public class PinController {
@@ -10,6 +14,10 @@ public class PinController {
     private static final String RESOURCE_NAME = "pins";
     private static final String PATH_LIST = "/" + PinController.RESOURCE_NAME;
     private static final String PATH_DETAIL = PinController.PATH_LIST + "/{id}";
+    private Gson gson = new Gson();
+
+    @Autowired
+    private List<Pin> pins;
 
     @ResponseBody
     @RequestMapping(
@@ -18,7 +26,15 @@ public class PinController {
         produces = PinController.CONTENT_TYPE
     )
     public ResponseEntity list() {
-        return ResponseEntity.ok(new Object());
+        return ResponseEntity.ok(gson.toJson(pins));
+    }
+
+    private Pin getPinById(int id) {
+        for(Pin pin : pins) {
+            if(pin.getId() == id)
+                return pin;
+        }
+        return null;
     }
 
     @ResponseBody
@@ -28,7 +44,11 @@ public class PinController {
         produces = PinController.CONTENT_TYPE
     )
     public ResponseEntity detail(@PathVariable int id) {
-        return ResponseEntity.ok(new Object());
+        Pin pin = getPinById(id);
+        if(pin == null) {
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok(gson.toJson(pin));
     }
 
     @ResponseBody
@@ -38,7 +58,14 @@ public class PinController {
         produces = PinController.CONTENT_TYPE,
         consumes = PinController.CONTENT_TYPE
     )
-    public ResponseEntity patch(@PathVariable int id) {
-        return ResponseEntity.ok(new Object());
+    public ResponseEntity patch(
+        @PathVariable int id,
+        @RequestBody String body
+    ) {
+        Pin pin = getPinById(id);
+        if(pin == null) {
+            return ResponseEntity.noContent().build();
+        }
+        return ResponseEntity.ok(gson.toJson(pin));
     }
 }
