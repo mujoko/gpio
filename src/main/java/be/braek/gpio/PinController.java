@@ -5,7 +5,6 @@ import com.google.gson.JsonSyntaxException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
 import java.util.List;
 
 @RestController
@@ -32,7 +31,7 @@ public class PinController {
 
     private Pin getPinById(int id) {
         for(Pin pin : pins) {
-            if(pin.getId() == id)
+            if(pin.getId().equals(String.valueOf(id)))
                 return pin;
         }
         return null;
