@@ -1,4 +1,4 @@
-# GPIO Service
+# GPIO Web Service
 
 ## Description
 
