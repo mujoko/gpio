@@ -1,5 +1,7 @@
 package be.braek.gpio;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
@@ -28,6 +30,13 @@ public class SpringConfig implements WebMvcConfigurer {
         viewResolver.setPrefix("/WEB-INF/jsp/");
         viewResolver.setSuffix(".jsp");
         return viewResolver;
+    }
+
+    @Bean
+    public Gson gson() {
+        GsonBuilder builder = new GsonBuilder();
+        builder.registerTypeAdapter(Pin.class, new PinAdapter());
+        return builder.create();
     }
 
     @Bean

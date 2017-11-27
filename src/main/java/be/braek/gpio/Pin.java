@@ -2,14 +2,14 @@ package be.braek.gpio;
 
 public class Pin {
 
-    private String id;
+    private int id;
 
     private int address;
 
     private int state;
 
     public Pin(int id, int address, int state) {
-        setId(String.valueOf(id));
+        setId(id);
         setAddress(address);
         setState(state);
     }
@@ -30,11 +30,11 @@ public class Pin {
         this.state = state;
     }
 
-    public String getId() {
+    public int getId() {
         return id;
     }
 
-    public void setId(String id) {
+    public void setId(int id) {
         this.id = id;
     }
 }

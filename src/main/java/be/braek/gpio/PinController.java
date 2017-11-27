@@ -1,6 +1,8 @@
 package be.braek.gpio;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 import com.google.gson.JsonSyntaxException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -14,10 +16,12 @@ public class PinController {
     private static final String RESOURCE_NAME = "pins";
     private static final String PATH_LIST = "/" + PinController.RESOURCE_NAME;
     private static final String PATH_DETAIL = PinController.PATH_LIST + "/{id}";
-    private Gson gson = new Gson();
 
     @Autowired
     private List<Pin> pins;
+
+    @Autowired
+    private Gson gson;
 
     @ResponseBody
     @RequestMapping(
@@ -26,15 +30,21 @@ public class PinController {
         produces = PinController.CONTENT_TYPE
     )
     public ResponseEntity list() {
-        return ResponseEntity.ok(gson.toJson(new Envelope(pins)));
+        return ResponseEntity.ok(createResponse(pins));
     }
 
     private Pin getPinById(int id) {
         for(Pin pin : pins) {
-            if(pin.getId().equals(String.valueOf(id)))
+            if(pin.getId() == id)
                 return pin;
         }
         return null;
+    }
+
+    private String createResponse(Object data) {
+        JsonObject response = new JsonObject();
+        response.add("data", gson.toJsonTree(data));
+        return response.toString();
     }
 
     @ResponseBody
@@ -48,7 +58,7 @@ public class PinController {
         if(pin == null) {
             return ResponseEntity.notFound().build();
         }
-        return ResponseEntity.ok(gson.toJson(new Envelope(pin)));
+        return ResponseEntity.ok(createResponse(pin));
     }
 
     @ResponseBody
@@ -67,8 +77,7 @@ public class PinController {
             return ResponseEntity.noContent().build();
         }
         try {
-            Envelope envelope = gson.fromJson(body, Envelope.class);
-            return ResponseEntity.ok(gson.toJson(new Envelope(pin)));
+            return ResponseEntity.ok(createResponse(pin));
         } catch(JsonSyntaxException jse) {
             return ResponseEntity.badRequest().build();
         }
