@@ -20,6 +20,11 @@ public class PinAdapter extends TypeAdapter<Pin> {
     }
 
     public Pin read(JsonReader reader) throws IOException {
+//        //Pin pin = new Pin();
+//        reader.beginObject();
+//
+//        reader.endObject();
+//        return pin;
         return null;
     }
 }

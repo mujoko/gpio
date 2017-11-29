@@ -1,9 +1,6 @@
 package be.braek.gpio;
 
-import com.google.gson.Gson;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonSyntaxException;
+import com.google.gson.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -76,6 +73,7 @@ public class PinController {
         if(pin == null) {
             return ResponseEntity.noContent().build();
         }
+        pin = gson.fromJson(body, Pin.class);
         try {
             return ResponseEntity.ok(createResponse(pin));
         } catch(JsonSyntaxException jse) {
